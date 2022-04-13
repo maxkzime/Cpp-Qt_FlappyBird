@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>imgs/background.png</file>
+        <file>imgs/flappydown.png</file>
+        <file>imgs/flappymiddle.png</file>
+        <file>imgs/flappyup.png</file>
+        <file>imgs/gameover.png</file>
+        <file>imgs/toppipe.png</file>
+        <file>imgs/bottompipe.png</file>
+        <file>imgs/backgroundElongated.png</file>
+        <file>imgs/sprites.png</file>
+    </qresource>
+</RCC>
