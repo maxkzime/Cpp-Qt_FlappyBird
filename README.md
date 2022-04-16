@@ -3,7 +3,7 @@
 ## Based on this tutorial :
 **https://youtube.com/playlist?list=PLQMs5svASiXM4AlcVLaX0LxA6APEWJPKZ**
 
-To add :
+## To add :
 
 - score menu with thes last three saved scores : saving bestscore in a file
 - long floor
