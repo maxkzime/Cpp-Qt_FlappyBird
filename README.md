@@ -5,6 +5,6 @@
 
 ## To add :
 
-- score menu with thes last three saved scores : saving bestscore in a file
+- score menu with the last three saved scores : saving bestscore in a file
 - long floor
  
