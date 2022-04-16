@@ -56,6 +56,8 @@ void BirdItem::updatePixmap()
     }
 }
 
+
+/* Collision with the floor */
 bool BirdItem::collideWithFloor()
 {
     bool collideValidation = false;

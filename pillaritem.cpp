@@ -41,10 +41,10 @@ PillarItem::PillarItem() :
 
 }
 
-
+/* Deleting Items */
 PillarItem::~PillarItem()
 {
-    qDebug() << "Deleting Pillars ";
+    //qDebug() << "Deleting Pillars ";
     delete topPillar;
     delete bottomPillar;
 }

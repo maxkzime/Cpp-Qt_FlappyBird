@@ -1,7 +1,5 @@
 #include "scene.h"
-#include <QGraphicsSceneMouseEvent>
-#include <QKeyEvent>
-#include <QDebug>
+
 
 
 
@@ -29,17 +27,19 @@ void Scene::setUpPillarTimer()
     });
 }
 
+/* Intialize floor */
 void Scene::addFloor()
 {
-    floorItem = new Floor(QPixmap(":/imgs/floor.png").scaled(QSize(308,108)));
+    floorItem = new Floor(QPixmap(":/imgs/floorElongated.png").scaled(QSize(2464,112)));
     addItem(floorItem);
-    floorItem->setPos(QPointF(0,0) + QPointF(-floorItem->boundingRect().width()/2,220));
+    floorItem->setPos(QPointF(-250,0) + QPointF(/*-floorItem->boundingRect().width()/2*/0,240));
 }
 
 
 void Scene::freezeGame()
 {
     bird->stopFlying();
+    floorItem->stopFloor();
     QList<QGraphicsItem *> sceneItems = items();
     foreach (QGraphicsItem * item, sceneItems) {
         PillarItem * pillar = dynamic_cast<PillarItem*>(item);
@@ -49,6 +49,14 @@ void Scene::freezeGame()
     }
 }
 
+
+void Scene::cleanFloor()
+{
+
+    removeItem(floorItem);
+    delete floorItem;
+
+}
 
 /*
  * Liste de tous les items de la scène,
@@ -67,11 +75,13 @@ void Scene::cleanPillars()
     }
 }
 
+
 bool Scene::getGameOn() const
 {return gameOn;}
 
 void Scene::setGameOn(bool newGameOn)
 {gameOn = newGameOn;}
+
 
 void Scene::incrementScore()
 {
@@ -195,7 +205,7 @@ void Scene::addBird()
  * - stop the pillars spawning
  * -
  * - stop game
- * - show game-over summary with restart and menu buttons
+ * - show game-over  summary with restart and menu buttons
  */
 void Scene::endOfTheRound()
 {
@@ -230,9 +240,22 @@ void Scene::addStartMenu()
     });
 }
 
-
+/* Starting a game :
+ * - Cleaning or adding floor (restarting animation)
+ * - Starting bird animation
+ * - Starting pillar animation
+ * - reset score
+ * - hide graphics (menu, game-over, ect..)
+ */
 void Scene::startGame()
 {
+    if(floorItem != nullptr){
+        cleanFloor();
+        addFloor();
+    }else
+        addFloor();
+
+
     // start bird anim
     bird->startFlying();
 
@@ -240,11 +263,13 @@ void Scene::startGame()
     if(!pillarTimer->isActive()){
         cleanPillars();
         pillarTimer->start(1000); // initialize pillars spawning (rate)
-
-        setGameOn(true);
-        setCurrentScore(0);
-        hideGraphics();
     }
+
+    setGameOn(true);
+
+    setCurrentScore(0);
+
+    hideGraphics();
 }
 
 /* Bird movement for key space */

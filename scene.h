@@ -3,6 +3,9 @@
 
 #include <QGraphicsScene>
 #include <QTimer>
+#include <QGraphicsSceneMouseEvent>
+#include <QKeyEvent>
+#include <QDebug>
 
 #include "pillaritem.h"
 #include "birditem.h"
@@ -41,6 +44,7 @@ private:
     void freezeGame();
     bool gameOn;
     void cleanPillars();
+    void cleanFloor();
 
 
     QTimer * pillarTimer;
