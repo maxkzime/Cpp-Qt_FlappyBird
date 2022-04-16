@@ -1,4 +1,4 @@
-# Cpp + Qt Flappy Bird
+# Cpp + Qt : Flappy Bird
 
 ## Based on this tutorial :
 **https://youtube.com/playlist?list=PLQMs5svASiXM4AlcVLaX0LxA6APEWJPKZ**
