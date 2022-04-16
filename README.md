@@ -5,4 +5,4 @@
 
 ## To add :
 
-- scoreboard with the last three saved scores : saving bestscore in a file
+- scoreboard with the last three saved scores : saving bestscore in a file or sqlite
