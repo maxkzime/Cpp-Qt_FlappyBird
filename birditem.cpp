@@ -1,6 +1,7 @@
 #include "birditem.h"
 #include <QTimer>
 #include <QRandomGenerator>
+#include "floor.h"
 
 BirdItem::BirdItem(QPixmap pixmap)
     :
@@ -55,6 +56,30 @@ void BirdItem::updatePixmap()
     }
 }
 
+bool BirdItem::collideWithFloor()
+{
+    bool collideValidation = false;
+    QList<QGraphicsItem*> collidingItems = this->collidingItems();
+    collidingItems.append(this->collidingItems());
+
+    foreach (QGraphicsItem * item, collidingItems) {
+        Floor * floorItem = dynamic_cast<Floor*>(item);
+        if(floorItem){
+            collideValidation = true;
+        }
+    }
+
+    return collideValidation;
+}
+
+void BirdItem::detectCollide()
+{
+    if(collideWithFloor()){
+        qDebug() << "Floor collided ";
+        emit collidingFloor();
+    }
+}
+
 
 qreal BirdItem::rotation() const
 {return m_rotation;}
@@ -77,7 +102,7 @@ void BirdItem::setRotation(qreal newRotation)
 qreal BirdItem::y() const
 {return m_y;}
 
-void BirdItem::shootUp()
+void BirdItem::moveUp()
 {
     yAnimation->stop();
     rotationAnimation->stop();
@@ -108,6 +133,8 @@ void BirdItem::setY(qreal newY)
 {
     moveBy(0,newY - m_y);
     m_y = newY;
+
+    detectCollide();
 }
 
 void BirdItem::rotateTo(const qreal &end, const int &duration, const QEasingCurve &curve)

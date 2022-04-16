@@ -17,7 +17,7 @@ public:
     qreal rotation() const;
     qreal y() const;
 
-    void shootUp();
+    void moveUp();
     void startFlying();
     void stopFlying();
 
@@ -31,6 +31,7 @@ public slots:
     void fallBackToGround();
 
 signals:
+    void collidingFloor();
 
 private:
     enum WingPosition{
@@ -49,6 +50,10 @@ private:
 
     QPropertyAnimation * rotationAnimation;
     QPropertyAnimation * yAnimation;
+
+
+    bool collideWithFloor();
+    void detectCollide();
 };
 
 #endif // BIRDITEM_H

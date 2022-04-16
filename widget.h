@@ -2,7 +2,6 @@
 #define WIDGET_H
 
 #include <QWidget>
-
 #include "scene.h"
 
 QT_BEGIN_NAMESPACE
@@ -17,12 +16,10 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
-private slots:
-    void on_pb_start_clicked();
-
 private:
     Ui::Widget *ui;
 
+public:
     Scene * scene;
 };
 #endif // WIDGET_H

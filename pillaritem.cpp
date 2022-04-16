@@ -17,19 +17,18 @@ PillarItem::PillarItem() :
 
     bottomPillar->setPos(QPointF(0,0) + QPointF(-bottomPillar->boundingRect().width()/2,60));
 
-
     addToGroup(topPillar);
     addToGroup(bottomPillar);
 
     yPos = QRandomGenerator::global()->bounded(150);
     int xRandomizer = QRandomGenerator::global()->bounded(200);
 
-    setPos(QPointF(0,0) + QPointF(260 + xRandomizer, yPos)); // or QPoint with no F
+    setPos(QPointF(0,0) + QPointF(260 + xRandomizer, yPos));
 
     xAnimation = new QPropertyAnimation(this, "x", this);
     xAnimation->setStartValue(260 + xRandomizer);
     xAnimation->setEndValue(-250);
-    xAnimation->setEasingCurve(QEasingCurve::Linear); // or QEasingCurve::Linear
+    xAnimation->setEasingCurve(QEasingCurve::Linear);
     xAnimation->setDuration(QRandomGenerator::global()->bounded(1900,2500));
 
     connect(xAnimation, &QPropertyAnimation::finished,[=](){

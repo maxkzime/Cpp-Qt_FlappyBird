@@ -10,6 +10,8 @@ CONFIG += c++11
 
 SOURCES += \
     birditem.cpp \
+    floor.cpp \
+    interactiveimage.cpp \
     main.cpp \
     pillaritem.cpp \
     scene.cpp \
@@ -17,6 +19,8 @@ SOURCES += \
 
 HEADERS += \
     birditem.h \
+    floor.h \
+    interactiveimage.h \
     pillaritem.h \
     scene.h \
     widget.h

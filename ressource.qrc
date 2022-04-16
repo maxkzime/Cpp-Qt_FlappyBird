@@ -9,5 +9,10 @@
         <file>imgs/bottompipe.png</file>
         <file>imgs/backgroundElongated.png</file>
         <file>imgs/sprites.png</file>
+        <file>imgs/cadre.png</file>
+        <file>imgs/floor.png</file>
+        <file>imgs/menu.png</file>
+        <file>imgs/start.png</file>
+        <file>imgs/title.png</file>
     </qresource>
 </RCC>

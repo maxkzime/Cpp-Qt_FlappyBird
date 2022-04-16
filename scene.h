@@ -6,6 +6,8 @@
 
 #include "pillaritem.h"
 #include "birditem.h"
+#include "interactiveimage.h"
+#include "floor.h"
 
 class Scene : public QGraphicsScene
 {
@@ -13,6 +15,8 @@ class Scene : public QGraphicsScene
 public:
     explicit Scene(QObject *parent = nullptr);
     void addBird();
+    void addStartMenu();
+    void addFloor();
 
     void startGame();
 
@@ -28,8 +32,10 @@ signals:
 public slots:
 
 private:
-    void showGameOverGraphics();
-    void hideGameOverGraphics();
+    void endOfTheRound();
+
+    void showGameoverGraphics();
+    void hideGraphics();
     void setUpPillarTimer();
 
     void freezeGame();
@@ -39,12 +45,23 @@ private:
 
     QTimer * pillarTimer;
     BirdItem * bird;
+    Floor * floorItem;
+
+
+    QGraphicsPixmapItem * gameoverPix = nullptr;
+    QGraphicsTextItem * scoreTextItem = nullptr;
+    QGraphicsPixmapItem * gameoverBlock = nullptr;
+
+    interactiveImage * myStartButton = nullptr;
+    interactiveImage * myMenuButton = nullptr;
+
+
+
 
     int currentScore;
     int bestScore;
 
-    QGraphicsPixmapItem * gameOverPix = nullptr;
-    QGraphicsTextItem * scoreTextItem = nullptr;
+
 
     // QGraphicsScene interface
 protected:

@@ -5,7 +5,6 @@
 
 #include "pillaritem.h"
 
-
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
@@ -15,11 +14,11 @@ Widget::Widget(QWidget *parent)
     scene = new Scene(this);
     scene->setSceneRect(-250,-250,500,500);
 
-    QGraphicsPixmapItem * pixItem = new QGraphicsPixmapItem(QPixmap(":/imgs/backgroundElongated.png").scaled(QSize(432, 1536)));
+    QGraphicsPixmapItem * pixBackground = new QGraphicsPixmapItem(QPixmap(":/imgs/backgroundElongated.png").scaled(QSize(432, 1536)));
 
-    scene->addItem(pixItem);
-    pixItem->setPos(QPointF(0,0) - QPointF(pixItem->boundingRect().width()/2,
-                                           pixItem->boundingRect().height()/2));
+    scene->addItem(pixBackground);
+    pixBackground->setPos(QPointF(0,0) - QPointF(pixBackground->boundingRect().width()/2,
+                                                 pixBackground->boundingRect().height()/2));
 
     //    for( int i = 0; i<= 256;)
     //    {
@@ -31,7 +30,10 @@ Widget::Widget(QWidget *parent)
     scene->addLine(-400,0,400,0,QPen(Qt::red));
     scene->addLine(0,-400,0,400,QPen(Qt::blue));
 
+    scene->addFloor();
     scene->addBird();
+
+    scene->addStartMenu();
 
     ui->graphicsView->setScene(scene);
 }
@@ -40,7 +42,4 @@ Widget::Widget(QWidget *parent)
 Widget::~Widget()
 {delete ui;}
 
-
-void Widget::on_pb_start_clicked()
-{scene->startGame();}
 
