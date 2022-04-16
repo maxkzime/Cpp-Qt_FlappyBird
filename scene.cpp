@@ -101,41 +101,74 @@ void Scene::setCurrentScore(int newCurrentScore)
 
 /* Show game-over graphics :
  * - Game-over title
- *
- *
+ * - Game-over block
+ * - Score and Best score
+ * - Menu button
+ * - Start button
+ * - Medals
  */
 void Scene::showGameoverGraphics()
 {
     // game-over title
-    gameoverPix = new QGraphicsPixmapItem(QPixmap(":/imgs/gameover.png").scaled(288,63));
-    addItem(gameoverPix);
-    gameoverPix->setPos(QPointF(0,0) - QPointF(gameoverPix->boundingRect().width()/2,
-                                               gameoverPix->boundingRect().height()*3));
-
+    gameoverTitle = new QGraphicsPixmapItem(QPixmap(":/imgs/gameover.png").scaled(288,63));
+    addItem(gameoverTitle);
+    gameoverTitle->setPos(QPointF(0,0) - QPointF(gameoverTitle->boundingRect().width()/2,
+                                                 gameoverTitle->boundingRect().height()*3));
+    // game-over block
     gameoverBlock = new QGraphicsPixmapItem(QPixmap(":/imgs/cadre.png").scaled(226,116));
     addItem(gameoverBlock);
     gameoverBlock->setPos(QPointF(0,0) - QPointF(gameoverBlock->boundingRect().width()/2,
-                                                 gameoverPix->boundingRect().height()*1.8));
+                                                 gameoverTitle->boundingRect().height()*1.8));
+
+    // score and best score for game-over block
+    scoreTextItem = new QGraphicsTextItem(QString::number(currentScore));
+    bestscoreTextItem = new QGraphicsTextItem(QString::number(bestScore));
+
+    QFont mFont("Consolas", 20, QFont::Bold);
+
+    scoreTextItem->setFont(mFont);
+    bestscoreTextItem->setFont(mFont);
+
+    scoreTextItem->setDefaultTextColor(Qt::darkYellow);
+    bestscoreTextItem->setDefaultTextColor(Qt::darkYellow);
+
+    addItem(scoreTextItem);
+    addItem(bestscoreTextItem);
+
+    scoreTextItem->setPos(QPointF(0,0) - QPointF((scoreTextItem->boundingRect().width()/2)-gameoverBlock->boundingRect().width()/3,
+                                                 gameoverTitle->boundingRect().height()*1.4));
+    bestscoreTextItem->setPos(QPointF(0,0) - QPointF((bestscoreTextItem->boundingRect().width()/2)-gameoverBlock->boundingRect().width()/3,
+                                                     gameoverTitle->boundingRect().height()*0.7));
+
+    // Medals
+    if(currentScore > bestScore-1) // gold medal
+    {
+        medal = new QGraphicsPixmapItem(QPixmap(":/imgs/goldMedal.png").scaled(QSize(60,60)));
+        addItem(medal);
+        medal->setPos(QPointF(0,0) + QPointF((-medal->boundingRect().width()-36),
+                                             (-medal->boundingRect().height()-22)));
+    }
+    else if(currentScore > 9 && currentScore < 16) // Bronze medal
+    {
+        medal = new QGraphicsPixmapItem(QPixmap(":/imgs/bronzeMedal.png").scaled(QSize(60,60)));
+        addItem(medal);
+        medal->setPos(QPointF(0,0) + QPointF((-medal->boundingRect().width()-36),
+                                             (-medal->boundingRect().height()-22)));
+    }
+    else if(currentScore > 49) // silver medal
+    {
+        medal = new QGraphicsPixmapItem(QPixmap(":/imgs/silverMedal.png").scaled(QSize(60,60)));
+        addItem(medal);
+        medal->setPos(QPointF(0,0) + QPointF((-medal->boundingRect().width()-36),
+                                             (-medal->boundingRect().height()-22)));
+    }
 
 
-    // à modifier avec affichage image (faire une division du score)
-    //    scoreTextItem = new QGraphicsTextItem();
-    //    QString htmlString = "<p> Score : " + QString::number(currentScore) + "<p/>"
-    //            + "<p> Best Score :  " + QString::number(bestScore) + "</p>";
-    //    QFont mFont("Consolas", 20, QFont::Bold);
-
-    //    scoreTextItem->setHtml(htmlString);
-    //    scoreTextItem->setFont(mFont);
-    //    scoreTextItem->setDefaultTextColor(Qt::yellow);
-    //    addItem(scoreTextItem);
-
-    //    scoreTextItem->setPos(QPointF(0,0) - QPointF(scoreTextItem->boundingRect().width()/2,
-    //                                                 -gameOverPix->boundingRect().height()/2));
-
+    // menu button
     myMenuButton = new interactiveImage(QPixmap(":/imgs/menu.png").scaled(160,56));
     addItem(myMenuButton);
     myMenuButton->setPos(QPointF(0,0) - QPointF(myMenuButton->boundingRect().width()/2,
-                                                gameoverPix->boundingRect().height()-80));
+                                                gameoverTitle->boundingRect().height()-80));
 
     connect(myMenuButton,&interactiveImage::clickOnBimg,[=](){
         qDebug() << "showing menu !";
@@ -143,10 +176,11 @@ void Scene::showGameoverGraphics()
         cleanPillars();
     });
 
+    // start button
     myStartButton = new interactiveImage(QPixmap(":/imgs/start.png").scaled(QSize(160,56)));
     addItem(myStartButton);
     myStartButton->setPos(QPointF(0,0) - QPointF(myStartButton->boundingRect().width()/2,
-                                                 gameoverPix->boundingRect().height()-140));
+                                                 gameoverTitle->boundingRect().height()-150));
 
     connect(myStartButton,&interactiveImage::clickOnBimg,[=](){
         hideGraphics();
@@ -155,13 +189,22 @@ void Scene::showGameoverGraphics()
 
 }
 
-/* Delete game-over and start graphics */
+
+/* Delete game-over and start graphics :
+ * - Game-over title
+ * - Game-over block (showing score)
+ * - Score text & Bestscore text
+ * - Start button
+ * - Menu button
+ * - Scoreboard button
+ * - Medal
+ */
 void Scene::hideGraphics()
 {
-    if(gameoverPix != nullptr){
-        removeItem(gameoverPix);
-        delete gameoverPix;
-        gameoverPix = nullptr;
+    if(gameoverTitle != nullptr){
+        removeItem(gameoverTitle);
+        delete gameoverTitle;
+        gameoverTitle = nullptr;
     }
     if(gameoverBlock != nullptr){
         removeItem(gameoverBlock);
@@ -173,6 +216,11 @@ void Scene::hideGraphics()
         delete scoreTextItem;
         scoreTextItem = nullptr;
     }
+    if(bestscoreTextItem != nullptr){
+        removeItem(bestscoreTextItem);
+        delete bestscoreTextItem;
+        bestscoreTextItem = nullptr;
+    }
     if(myStartButton != nullptr){
         removeItem(myStartButton);
         delete myStartButton;
@@ -182,6 +230,16 @@ void Scene::hideGraphics()
         removeItem(myMenuButton);
         delete myMenuButton;
         myMenuButton = nullptr;
+    }
+    if(myScoreboardButton != nullptr){
+        removeItem(myScoreboardButton);
+        delete myScoreboardButton;
+        myScoreboardButton = nullptr;
+    }
+    if(medal != nullptr){
+        removeItem(medal);
+        delete medal;
+        medal = nullptr;
     }
 }
 
@@ -218,9 +276,9 @@ void Scene::endOfTheRound()
 
 /*
  * Create start menu :
- * Title
- * Start button
- *
+ * - Title
+ * - Start button
+ * Scoreboard button
  */
 void Scene::addStartMenu()
 {
@@ -237,6 +295,16 @@ void Scene::addStartMenu()
     connect(myStartButton,&interactiveImage::clickOnBimg,[=](){
         startGame();
         delete title;
+    });
+
+    myScoreboardButton = new interactiveImage(QPixmap(":/imgs/score.png").scaled(QSize(160,56)));
+    addItem(myScoreboardButton);
+    myScoreboardButton->setPos(QPointF(0,0) - QPointF(myScoreboardButton->boundingRect().width()/2,
+                                                      (myScoreboardButton->boundingRect().height()/2)-100));
+
+    connect(myScoreboardButton,&interactiveImage::clickOnBimg,[=](){
+        qDebug() << "showing scoreboard";
+        //delete myStartButton;
     });
 }
 

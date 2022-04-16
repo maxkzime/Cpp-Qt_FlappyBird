@@ -51,21 +51,18 @@ private:
     BirdItem * bird;
     Floor * floorItem;
 
-
-    QGraphicsPixmapItem * gameoverPix = nullptr;
+    QGraphicsPixmapItem * gameoverTitle = nullptr;
+    QGraphicsPixmapItem * medal = nullptr;
     QGraphicsTextItem * scoreTextItem = nullptr;
+    QGraphicsTextItem * bestscoreTextItem = nullptr;
     QGraphicsPixmapItem * gameoverBlock = nullptr;
 
     interactiveImage * myStartButton = nullptr;
     interactiveImage * myMenuButton = nullptr;
-
-
-
+    interactiveImage * myScoreboardButton = nullptr;
 
     int currentScore;
     int bestScore;
-
-
 
     // QGraphicsScene interface
 protected:
