@@ -10,6 +10,7 @@ BirdItem::BirdItem(QPixmap pixmap)
 {
     setPixmap(pixmap);
 
+    // set animation timer
     QTimer * birdWingsTimer = new QTimer(this);
     connect(birdWingsTimer, &QTimer::timeout, [=](){
         updatePixmap();
@@ -25,15 +26,59 @@ BirdItem::BirdItem(QPixmap pixmap)
     yAnimation->setDuration(1000);
 
     connect(yAnimation,&QPropertyAnimation::finished, [=](){
-        fallBackToGround();
+        fallBackToGround(); // testing loop
     });
 
-
-
     rotationAnimation = new QPropertyAnimation(this, "rotation", this);
-
 }
 
+
+qreal BirdItem::rotation() const {return m_rotation;}
+qreal BirdItem::y() const {return m_y;}
+
+
+void BirdItem::setRotation(qreal newRotation)
+{
+    m_rotation = newRotation;
+
+    QPointF c = boundingRect().center();
+    QTransform t;
+    t.translate(c.x(),c.y());       // translation
+    t.rotate(newRotation);          // rotation
+    t.translate(-c.x(),-c.y());     // translation inverse
+    setTransform(t);                // transformation sur le bird
+}
+
+
+void BirdItem::setY(qreal newY)
+{
+    moveBy(0,newY - m_y);
+    m_y = newY;
+
+    detectCollide();
+}
+
+
+/* Gravity simulation : bird fall to the ground */
+void BirdItem::fallBackToGround()
+{
+    // called when yAnimation->stop(); = test loop
+    if( y() < groundPosition)
+    {
+        rotationAnimation->stop();
+
+        yAnimation->setStartValue(y());
+        yAnimation->setEndValue(groundPosition);
+        yAnimation->setEasingCurve(QEasingCurve::Linear);
+        yAnimation->setDuration(1000);
+        yAnimation->start();
+
+        rotateTo(90,1100,QEasingCurve::BezierSpline); // 90 deg vers le bas
+    }
+}
+
+
+/* Update pixmap depending on wing position */
 void BirdItem::updatePixmap()
 {
     if(wingPos == MIDDLE)
@@ -49,7 +94,6 @@ void BirdItem::updatePixmap()
             wingPos = DOWN;
             wingDirection = 1;
         }
-
     }else{
         setPixmap(QPixmap(":/imgs/flappymiddle.png").scaled(QSize(40, 40)));
         wingPos = MIDDLE;
@@ -57,7 +101,7 @@ void BirdItem::updatePixmap()
 }
 
 
-/* Collision with the floor */
+/* Detect collision with the floor */
 bool BirdItem::collideWithFloor()
 {
     bool collideValidation = false;
@@ -74,36 +118,20 @@ bool BirdItem::collideWithFloor()
     return collideValidation;
 }
 
+
+/* Collision emission if collide with floor and with top map */
 void BirdItem::detectCollide()
 {
-    if(collideWithFloor()){
-        qDebug() << "Floor collided ";
+    if(collideWithFloor() /*|| y() < scene()->sceneRect().y()-50*/){
+        //qDebug() << "Floor collided ";
+        qDebug() << scene()->sceneRect().y() ;
+        //setY(y()-20);
         emit collidingFloor();
     }
 }
 
 
-qreal BirdItem::rotation() const
-{return m_rotation;}
-
-void BirdItem::setRotation(qreal newRotation)
-{
-    m_rotation = newRotation;
-
-    QPointF c = boundingRect().center();
-    QTransform t;
-    t.translate(c.x(),c.y());       // translation
-    t.rotate(newRotation);          // rotation
-    t.translate(-c.x(),-c.y());     // translation inverse
-    setTransform(t);                // transformation sur le bird
-
-
-
-}
-
-qreal BirdItem::y() const
-{return m_y;}
-
+/* Stop fall and rotate down, start up anim */
 void BirdItem::moveUp()
 {
     yAnimation->stop();
@@ -119,11 +147,14 @@ void BirdItem::moveUp()
     rotateTo(-20,200,QEasingCurve::BezierSpline);
 }
 
+
+/* Start flying animation */
 void BirdItem::startFlying()
 {
     yAnimation->start();
     rotateTo(90,1200,QEasingCurve::BezierSpline); // 90 deg vers le bas
 }
+
 
 void BirdItem::stopFlying()
 {
@@ -131,14 +162,8 @@ void BirdItem::stopFlying()
     rotationAnimation->stop();
 }
 
-void BirdItem::setY(qreal newY)
-{
-    moveBy(0,newY - m_y);
-    m_y = newY;
 
-    detectCollide();
-}
-
+/* Template for rotation, and start */
 void BirdItem::rotateTo(const qreal &end, const int &duration, const QEasingCurve &curve)
 {
     rotationAnimation->setStartValue(rotation());
@@ -146,22 +171,4 @@ void BirdItem::rotateTo(const qreal &end, const int &duration, const QEasingCurv
     rotationAnimation->setEasingCurve(curve);
     rotationAnimation->setDuration(duration);
     rotationAnimation->start();
-}
-
-void BirdItem::fallBackToGround()
-{
-    // called when yAnimation->stop();
-    if( y() < groundPosition)
-    {
-        rotationAnimation->stop();
-
-
-        yAnimation->setStartValue(y());
-        yAnimation->setEndValue(groundPosition);
-        yAnimation->setEasingCurve(QEasingCurve::Linear);
-        yAnimation->setDuration(1000);
-        yAnimation->start();
-
-        rotateTo(90,1100,QEasingCurve::BezierSpline); // 90 deg vers le bas
-    }
 }

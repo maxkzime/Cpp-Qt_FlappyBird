@@ -5,7 +5,6 @@
 #include <QGraphicsPixmapItem>
 #include <QPropertyAnimation>
 #include <QGraphicsScene>
-#include "floor.h"
 
 class BirdItem : public QObject ,  public QGraphicsPixmapItem
 {
@@ -15,6 +14,7 @@ class BirdItem : public QObject ,  public QGraphicsPixmapItem
 
 public:
     explicit BirdItem(QPixmap pixmap);
+
     qreal rotation() const;
     qreal y() const;
 
@@ -23,23 +23,26 @@ public:
     void stopFlying();
 
 public slots:
-    void setRotation(qreal newRotation);
+    void fallBackToGround();
 
+    void setRotation(qreal newRotation);
     void setY(qreal newY);
 
     void rotateTo(const qreal &end, const int& duration, const QEasingCurve& curve);
-
-    void fallBackToGround();
 
 signals:
     void collidingFloor();
 
 private:
     enum WingPosition{UP,MIDDLE,DOWN};
+
     void updatePixmap();
+    bool collideWithFloor();
+    void detectCollide();
+
+
     WingPosition wingPos;
     bool wingDirection; // 0: down, 1: up
-
 
     qreal m_rotation;
     qreal m_y;
@@ -47,10 +50,6 @@ private:
 
     QPropertyAnimation * rotationAnimation;
     QPropertyAnimation * yAnimation;
-
-
-    bool collideWithFloor();
-    void detectCollide();
 };
 
 #endif // BIRDITEM_H
