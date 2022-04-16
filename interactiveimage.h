@@ -3,6 +3,7 @@
 
 #include <QGraphicsPixmapItem>
 #include <QObject>
+#include <QGraphicsSceneMouseEvent>
 
 class interactiveImage : public QObject, public QGraphicsPixmapItem
 {

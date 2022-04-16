@@ -133,10 +133,10 @@ void Scene::incrementScore()
 void Scene::addStartMenu()
 {
     // Title
-    QGraphicsPixmapItem * title = new QGraphicsPixmapItem(QPixmap(":/imgs/title.png").scaled(294,72));
-    addItem(title);
-    title->setPos(QPointF(0,0) - QPointF(title->boundingRect().width()/2,
-                                         (title->boundingRect().height()/2)+100));
+    fbTitle = new QGraphicsPixmapItem(QPixmap(":/imgs/title.png").scaled(294,72));
+    addItem(fbTitle);
+    fbTitle->setPos(QPointF(0,0) - QPointF(fbTitle->boundingRect().width()/2,
+                                           (fbTitle->boundingRect().height()/2)+100));
 
     // Start button
     myStartButton = new interactiveImage(QPixmap(":/imgs/start.png").scaled(QSize(160,56)));
@@ -146,7 +146,6 @@ void Scene::addStartMenu()
 
     connect(myStartButton,&interactiveImage::clickOnBimg,[=](){
         startGame();
-        delete title;
     });
 
     // Scoreboard button
@@ -306,6 +305,11 @@ void Scene::hideGraphics()
         delete medal;
         medal = nullptr;
     }
+    if(fbTitle != nullptr){
+        removeItem(fbTitle);
+        delete fbTitle;
+        fbTitle = nullptr;
+    }
 }
 
 
@@ -324,7 +328,6 @@ void Scene::startGame()
         addFloor();
     }else
         addFloor();
-
 
     // start bird anim
     bird->startFlying();
@@ -353,6 +356,8 @@ void Scene::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Space && gameOn)
         bird->moveUp();
+    if(!gameOn)
+        startGame();
     QGraphicsScene::keyPressEvent(event);
 }
 /* Bird movement for left button click */

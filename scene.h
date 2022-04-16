@@ -3,7 +3,6 @@
 
 #include <QGraphicsScene>
 #include <QTimer>
-#include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 #include <QDebug>
 
@@ -15,6 +14,7 @@
 class Scene : public QGraphicsScene
 {
     Q_OBJECT
+
 public:
     explicit Scene(QObject *parent = nullptr);
 
@@ -26,6 +26,7 @@ public:
 
     void startGame();
     void incrementScore();
+
 
 private:
     void setUpPillarTimer();
@@ -48,6 +49,7 @@ private:
     Floor * floorItem;
 
     QGraphicsPixmapItem * gameoverTitle = nullptr;
+    QGraphicsPixmapItem * fbTitle = nullptr;
     QGraphicsPixmapItem * medal = nullptr;
     QGraphicsTextItem * scoreTextItem = nullptr;
     QGraphicsTextItem * bestscoreTextItem = nullptr;

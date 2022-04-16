@@ -5,16 +5,15 @@
 #include <QGraphicsItemGroup>
 #include <QGraphicsPixmapItem>
 #include <QPropertyAnimation>
-#include "birditem.h"
-#include "scene.h"
 #include <QRandomGenerator>
-#include <QDebug>
-#include <QGraphicsScene>
+
+#include "scene.h"
 
 class PillarItem : public QObject ,  public QGraphicsItemGroup
 {
     Q_OBJECT
     Q_PROPERTY(qreal x READ x WRITE setX)
+
 public:
     explicit PillarItem();
     ~PillarItem();
@@ -26,10 +25,7 @@ public:
 signals:
     void collideFail();
 
-public slots:
-
 private:
-
     bool collideWithBird();
 
     QGraphicsPixmapItem * topPillar;
@@ -39,7 +35,7 @@ private:
     qreal m_x;
     int yPos;
 
-    bool pastByTheBird;
+    bool pastTheBird;
 };
 
 #endif // PILLARITEM_H

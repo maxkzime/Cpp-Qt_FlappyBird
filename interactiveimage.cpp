@@ -1,7 +1,5 @@
 #include "interactiveimage.h"
 
-#include <QGraphicsSceneMouseEvent>
-
 interactiveImage::interactiveImage(QPixmap pixmap)
 {setPixmap(QPixmap(pixmap));}
 

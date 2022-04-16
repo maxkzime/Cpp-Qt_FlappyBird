@@ -5,6 +5,7 @@
 #include <QGraphicsPixmapItem>
 #include <QPropertyAnimation>
 #include <QGraphicsScene>
+#include "floor.h"
 
 class BirdItem : public QObject ,  public QGraphicsPixmapItem
 {
@@ -34,11 +35,7 @@ signals:
     void collidingFloor();
 
 private:
-    enum WingPosition{
-        UP,
-        MIDDLE,
-        DOWN
-    };
+    enum WingPosition{UP,MIDDLE,DOWN};
     void updatePixmap();
     WingPosition wingPos;
     bool wingDirection; // 0: down, 1: up

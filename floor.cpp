@@ -1,8 +1,6 @@
 #include "floor.h"
 
 #include "scene.h"
-#include <QDebug>
-#include <QGraphicsScene>
 
 Floor::Floor(QPixmap pixmap)
 {
@@ -15,7 +13,7 @@ Floor::Floor(QPixmap pixmap)
     xAnimation->setDuration(15000);
 
     connect(xAnimation, &QPropertyAnimation::finished,[=](){
-        qDebug() << "Animation finished";
+        //qDebug() << "Animation finished";
         xAnimation->start();
     });
 
@@ -23,17 +21,15 @@ Floor::Floor(QPixmap pixmap)
 }
 
 
-qreal Floor::x() const
-{return m_x;}
+qreal Floor::x() const {return m_x;}
 
 
+/* Updating floor position for the animation */
 void Floor::setX(qreal newX)
 {
-    qDebug() << "floor position : " << newX;
+    //qDebug() << "floor position : " << newX;
     m_x = newX;
-
     setPos(QPointF(x(),y()) + QPointF(newX,0));
 }
 
-void Floor::stopFloor()
-{xAnimation->stop();}
+void Floor::stopFloor() {xAnimation->stop();}

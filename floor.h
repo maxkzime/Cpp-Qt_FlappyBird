@@ -9,6 +9,7 @@ class Floor : public QObject,  public QGraphicsPixmapItem
 {
     Q_OBJECT
     Q_PROPERTY(qreal x READ x WRITE setX)
+
 public:
     explicit Floor(QPixmap pixmap);
     qreal x() const;

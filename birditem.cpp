@@ -1,11 +1,11 @@
 #include "birditem.h"
+
 #include <QTimer>
 #include <QRandomGenerator>
 #include "floor.h"
 
 BirdItem::BirdItem(QPixmap pixmap)
-    :
-      wingPos(UP),
+    : wingPos(UP),
       wingDirection(0)
 {
     setPixmap(pixmap);
