@@ -1,41 +1,71 @@
 #include "scene.h"
 
-
-
-
 Scene::Scene(QObject *parent)
     : QGraphicsScene(parent),
       gameOn(false),
       currentScore(0),
       bestScore(0)
-{
-    setUpPillarTimer();
-}
+{setUpPillarTimer();}
 
-void Scene::setUpPillarTimer()
+
+/* Add the bird on the center of the scene
+ * connect the bird with the floor = colliding detection = end of the game
+ */
+void Scene::addBird()
 {
-    pillarTimer = new QTimer(this);
-    connect(pillarTimer, &QTimer::timeout,[=](){
-        PillarItem * pillarItem = new PillarItem();
-        connect(pillarItem,&PillarItem::collideFail,[=](){
-            pillarTimer->stop();
-            freezeGame();
-            setGameOn(false);
-            showGameoverGraphics();
-        });
-        addItem(pillarItem);
+    bird = new BirdItem(QPixmap(":/imgs/flappyup.png"));
+    addItem(bird);
+    bird->setPos(-20,-20);
+
+    connect(bird,&BirdItem::collidingFloor,[=](){
+        endOfTheRound();
     });
 }
+
 
 /* Intialize floor */
 void Scene::addFloor()
 {
     floorItem = new Floor(QPixmap(":/imgs/floorElongated.png").scaled(QSize(2464,112)));
     addItem(floorItem);
-    floorItem->setPos(QPointF(-250,0) + QPointF(/*-floorItem->boundingRect().width()/2*/0,240));
+    floorItem->setPos(QPointF(-250,0) + QPointF(0,240));
 }
 
 
+/* Initialize pillar animation and collision */
+void Scene::setUpPillarTimer()
+{
+    pillarTimer = new QTimer(this);
+    connect(pillarTimer, &QTimer::timeout,[=](){
+        PillarItem * pillarItem = new PillarItem();
+        connect(pillarItem,&PillarItem::collideFail,[=](){
+            endOfTheRound();
+        });
+        addItem(pillarItem);
+    });
+}
+
+
+/* End of the round :
+ * - stop the pillars spawning
+ * -
+ * - stop game
+ * - show game-over summary with restart and menu buttons
+ */
+void Scene::endOfTheRound()
+{
+    pillarTimer->stop();
+    freezeGame();
+    setGameOn(false);
+    showGameoverGraphics();
+}
+
+
+/* Freeze the game :
+ * - freeze bird anim
+ * - freeze floor anim
+ * - freeze pillar anim
+ */
 void Scene::freezeGame()
 {
     bird->stopFlying();
@@ -50,18 +80,24 @@ void Scene::freezeGame()
 }
 
 
+/* Getter + Setter for gameOn */
+//bool Scene::getGameOn() const {return gameOn;}
+void Scene::setGameOn(bool newGameOn) {gameOn = newGameOn;}
+
+
+/* Delete floor */
 void Scene::cleanFloor()
 {
-
     removeItem(floorItem);
     delete floorItem;
 
 }
 
-/*
- * Liste de tous les items de la scène,
- * détection si un item est un pillar,
- * si oui, on le retire puis supprime
+
+/* Delete pillars
+ * List elements of the scene,
+ * detect if its a pillar,
+ * if true, remove and delete it
  */
 void Scene::cleanPillars()
 {
@@ -76,28 +112,55 @@ void Scene::cleanPillars()
 }
 
 
-bool Scene::getGameOn() const
-{return gameOn;}
-
-void Scene::setGameOn(bool newGameOn)
-{gameOn = newGameOn;}
-
-
+/* increment the score,
+ * update best score
+ */
 void Scene::incrementScore()
 {
     currentScore++;
-    if(currentScore > bestScore){
-        bestScore = currentScore;
-    }
+    if(currentScore > bestScore){ bestScore = currentScore; }
 
-    qDebug() << "Score : " << currentScore
-             << " Bestscore : " << bestScore;
+    //qDebug() << "Score : " << currentScore << " Bestscore : " << bestScore;
 }
 
-void Scene::setCurrentScore(int newCurrentScore)
+
+/*
+ * Create start menu :
+ * - Title
+ * - Start button
+ * - Scoreboard button
+ */
+void Scene::addStartMenu()
 {
-    currentScore = newCurrentScore;
+    // Title
+    QGraphicsPixmapItem * title = new QGraphicsPixmapItem(QPixmap(":/imgs/title.png").scaled(294,72));
+    addItem(title);
+    title->setPos(QPointF(0,0) - QPointF(title->boundingRect().width()/2,
+                                         (title->boundingRect().height()/2)+100));
+
+    // Start button
+    myStartButton = new interactiveImage(QPixmap(":/imgs/start.png").scaled(QSize(160,56)));
+    addItem(myStartButton);
+    myStartButton->setPos(QPointF(0,0) - QPointF(myStartButton->boundingRect().width()/2,
+                                                 myStartButton->boundingRect().height()/2));
+
+    connect(myStartButton,&interactiveImage::clickOnBimg,[=](){
+        startGame();
+        delete title;
+    });
+
+    // Scoreboard button
+    myScoreboardButton = new interactiveImage(QPixmap(":/imgs/score.png").scaled(QSize(160,56)));
+    addItem(myScoreboardButton);
+    myScoreboardButton->setPos(QPointF(0,0) - QPointF(myScoreboardButton->boundingRect().width()/2,
+                                                      (myScoreboardButton->boundingRect().height()/2)-100));
+
+    connect(myScoreboardButton,&interactiveImage::clickOnBimg,[=](){
+        qDebug() << "showing scoreboard";
+        //delete myStartButton;
+    });
 }
+
 
 /* Show game-over graphics :
  * - Game-over title
@@ -114,6 +177,7 @@ void Scene::showGameoverGraphics()
     addItem(gameoverTitle);
     gameoverTitle->setPos(QPointF(0,0) - QPointF(gameoverTitle->boundingRect().width()/2,
                                                  gameoverTitle->boundingRect().height()*3));
+
     // game-over block
     gameoverBlock = new QGraphicsPixmapItem(QPixmap(":/imgs/cadre.png").scaled(226,116));
     addItem(gameoverBlock);
@@ -141,7 +205,7 @@ void Scene::showGameoverGraphics()
                                                      gameoverTitle->boundingRect().height()*0.7));
 
     // Medals
-    if(currentScore > bestScore-1) // gold medal
+    if(currentScore > (bestScore != 0 ? bestScore-1 : bestScore)) // gold medal
     {
         medal = new QGraphicsPixmapItem(QPixmap(":/imgs/goldMedal.png").scaled(QSize(60,60)));
         addItem(medal);
@@ -171,10 +235,11 @@ void Scene::showGameoverGraphics()
                                                 gameoverTitle->boundingRect().height()-80));
 
     connect(myMenuButton,&interactiveImage::clickOnBimg,[=](){
-        qDebug() << "showing menu !";
         hideGraphics();
         cleanPillars();
+        addStartMenu();
     });
+
 
     // start button
     myStartButton = new interactiveImage(QPixmap(":/imgs/start.png").scaled(QSize(160,56)));
@@ -244,70 +309,6 @@ void Scene::hideGraphics()
 }
 
 
-/* Add the bird on the center of the scene
- * connect the bird with the floor = colliding detection = end of the game
- */
-void Scene::addBird()
-{
-    bird = new BirdItem(QPixmap(":/imgs/flappyup.png"));
-    addItem(bird);
-    bird->setPos(-20,-20);
-
-    connect(bird,&BirdItem::collidingFloor,[=](){
-        endOfTheRound();
-    });
-}
-
-
-/* End of the game :
- * - stop the pillars spawning
- * -
- * - stop game
- * - show game-over  summary with restart and menu buttons
- */
-void Scene::endOfTheRound()
-{
-    pillarTimer->stop();
-    freezeGame();
-    setGameOn(false);
-    showGameoverGraphics();
-}
-
-
-/*
- * Create start menu :
- * - Title
- * - Start button
- * Scoreboard button
- */
-void Scene::addStartMenu()
-{
-    QGraphicsPixmapItem * title = new QGraphicsPixmapItem(QPixmap(":/imgs/title.png").scaled(294,72));
-    addItem(title);
-    title->setPos(QPointF(0,0) - QPointF(title->boundingRect().width()/2,
-                                         (title->boundingRect().height()/2)+100));
-
-    myStartButton = new interactiveImage(QPixmap(":/imgs/start.png").scaled(QSize(160,56)));
-    addItem(myStartButton);
-    myStartButton->setPos(QPointF(0,0) - QPointF(myStartButton->boundingRect().width()/2,
-                                                 myStartButton->boundingRect().height()/2));
-
-    connect(myStartButton,&interactiveImage::clickOnBimg,[=](){
-        startGame();
-        delete title;
-    });
-
-    myScoreboardButton = new interactiveImage(QPixmap(":/imgs/score.png").scaled(QSize(160,56)));
-    addItem(myScoreboardButton);
-    myScoreboardButton->setPos(QPointF(0,0) - QPointF(myScoreboardButton->boundingRect().width()/2,
-                                                      (myScoreboardButton->boundingRect().height()/2)-100));
-
-    connect(myScoreboardButton,&interactiveImage::clickOnBimg,[=](){
-        qDebug() << "showing scoreboard";
-        //delete myStartButton;
-    });
-}
-
 /* Starting a game :
  * - Cleaning or adding floor (restarting animation)
  * - Starting bird animation
@@ -317,6 +318,7 @@ void Scene::addStartMenu()
  */
 void Scene::startGame()
 {
+    // adding floor if necessary
     if(floorItem != nullptr){
         cleanFloor();
         addFloor();
@@ -335,10 +337,16 @@ void Scene::startGame()
 
     setGameOn(true);
 
-    setCurrentScore(0);
+    setCurrentScore(0); // reset score
 
-    hideGraphics();
+    hideGraphics(); // hiding graphics
 }
+
+
+// Setter for the score (score = 0 at the start of a round)
+void Scene::setCurrentScore(int newCurrentScore)
+{currentScore = newCurrentScore;}
+
 
 /* Bird movement for key space */
 void Scene::keyPressEvent(QKeyEvent *event)

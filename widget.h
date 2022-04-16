@@ -2,6 +2,7 @@
 #define WIDGET_H
 
 #include <QWidget>
+#include <QGraphicsPixmapItem>
 #include "scene.h"
 
 QT_BEGIN_NAMESPACE

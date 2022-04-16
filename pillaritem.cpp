@@ -1,10 +1,5 @@
 #include "pillaritem.h"
 
-#include "birditem.h"
-#include "scene.h"
-#include <QRandomGenerator>
-#include <QDebug>
-#include <QGraphicsScene>
 
 PillarItem::PillarItem() :
     topPillar(new QGraphicsPixmapItem(QPixmap(":/imgs/toppipe.png").scaled(QSize(42, 600)))),

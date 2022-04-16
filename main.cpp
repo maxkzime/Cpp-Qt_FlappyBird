@@ -9,3 +9,14 @@ int main(int argc, char *argv[])
     w.show();
     return a.exec();
 }
+
+/* To do :
+ * Scoreboard menu
+ * Scoreboard scrapping in a file
+ * Saving best score in a file
+ *
+ *
+ *
+ *
+ *
+ */

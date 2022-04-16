@@ -5,6 +5,11 @@
 #include <QGraphicsItemGroup>
 #include <QGraphicsPixmapItem>
 #include <QPropertyAnimation>
+#include "birditem.h"
+#include "scene.h"
+#include <QRandomGenerator>
+#include <QDebug>
+#include <QGraphicsScene>
 
 class PillarItem : public QObject ,  public QGraphicsItemGroup
 {

@@ -17,35 +17,31 @@ class Scene : public QGraphicsScene
     Q_OBJECT
 public:
     explicit Scene(QObject *parent = nullptr);
+
     void addBird();
-    void addStartMenu();
     void addFloor();
+    void addStartMenu();
 
-    void startGame();
-
-    bool getGameOn() const;
     void setGameOn(bool newGameOn);
 
+    void startGame();
     void incrementScore();
 
-    void setCurrentScore(int newCurrentScore);
-
-signals:
-
-public slots:
-
 private:
+    void setUpPillarTimer();
     void endOfTheRound();
+    void freezeGame();
+
+    void cleanFloor();
+    void cleanPillars();
 
     void showGameoverGraphics();
     void hideGraphics();
-    void setUpPillarTimer();
 
-    void freezeGame();
-    bool gameOn;
-    void cleanPillars();
-    void cleanFloor();
+    void setCurrentScore(int newCurrentScore);
 
+
+    bool gameOn; // player can't play if not true (allow ketpress and mousepress)
 
     QTimer * pillarTimer;
     BirdItem * bird;
