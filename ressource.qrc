@@ -14,5 +14,10 @@
         <file>imgs/menu.png</file>
         <file>imgs/start.png</file>
         <file>imgs/title.png</file>
+        <file>imgs/bronzeMedal.png</file>
+        <file>imgs/floorElongated.png</file>
+        <file>imgs/goldMedal.png</file>
+        <file>imgs/ironMedal.png</file>
+        <file>imgs/score.png</file>
     </qresource>
 </RCC>
