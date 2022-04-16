@@ -6,3 +6,4 @@
 ## To add :
 
 - scoreboard with the last three saved scores : saving bestscore in a file or sqlite
+- limit the top of the scene rect in birdItem.cpp
